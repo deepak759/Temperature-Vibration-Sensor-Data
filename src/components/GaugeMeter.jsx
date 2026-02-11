@@ -221,7 +221,7 @@ const arcLabels = [];
           transform={`rotate(90 ${cx} ${cy})`}
           
         >
-          <tspan fontSize="24" marginTop="6" fontWeight="bold" fill="#d2d2d2">
+          <tspan fontSize="24"  fontWeight="bold" fill="#d2d2d2">
             {value}
           </tspan>
           {unit && (
