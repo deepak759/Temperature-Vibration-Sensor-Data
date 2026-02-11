@@ -4,10 +4,10 @@ export default function CrestGauge({ value = 0 }) {
   let color = '#22c55e';
   let status = 'Normal';
 
-  if (value > 5) {
+  if (value > 0.7) {
     color = '#ef4444';
     status = 'Critical';
-  } else if (value > 3) {
+  } else if (value > 0.5) {
     color = '#f59e0b';
     status = 'Warning';
   }
@@ -17,13 +17,13 @@ export default function CrestGauge({ value = 0 }) {
       <div className="text-xl font-semibold mb-4">Crest Factor</div>
 
       {/* Bigger gauge */}
-      <div className="w-[320px] ">
+      <div className="w-[320px] h-full my-auto">
         <CustomGauge
           value={value}
           unit=""
           startValue={0}
-          endValue={6}
-          interval={1}
+          endValue={1}
+          interval={0.2}
           width={320}
           height={320}
           innerRadius={110}
@@ -219,9 +219,10 @@ const arcLabels = [];
           y={cy + 28}
           textAnchor="middle"
           transform={`rotate(90 ${cx} ${cy})`}
+          
         >
-          <tspan fontSize="24" fontWeight="bold" fill="#d2d2d2">
-            {value.toFixed(2)}
+          <tspan fontSize="24" marginTop="6" fontWeight="bold" fill="#d2d2d2">
+            {value}
           </tspan>
           {unit && (
             <tspan fontSize="18" fill="#333">

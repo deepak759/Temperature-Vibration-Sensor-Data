@@ -143,7 +143,7 @@ function Kpi({ title, value, unit }) {
     <motion.div whileHover={{ scale: 1.03 }} className="glass-card text-center">
       <div className="text-slate-400 text-sm">{title}</div>
       <div className="text-2xl font-bold">
-        {value ? value.toFixed(2) : '0'}
+        {value}
         {unit && <span className="text-sm ml-1">{unit}</span>}
       </div>
     </motion.div>
