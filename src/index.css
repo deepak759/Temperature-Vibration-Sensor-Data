@@ -153,6 +153,12 @@
   }
 }
 
+.glass-card {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 
+  rounded-2xl p-4 shadow-lg;
+}
+
+
 @layer base {
   * {
     @apply border-border;

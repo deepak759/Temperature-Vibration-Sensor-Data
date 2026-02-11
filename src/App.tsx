@@ -1,16 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
-import { useSensorSocket } from "./hooks/useSensorSocket";
-import VibrationChart from "./components/VibrationChart";
-import TemperatureChart from "./components/TemperatureChart";
-import StatCard from "./components/StatCard";
+import { useEffect, useMemo, useState } from 'react';
+import { useSensorSocket } from './hooks/useSensorSocket';
+import VibrationChart from './components/VibrationChart';
+import TemperatureChart from './components/TemperatureChart';
+import StatCard from './components/StatCard';
 
 const MAX_POINTS = 10; // ~last 2 minutes if 1/sec
 
-type ViewMode = "live" | "history";
+type ViewMode = 'live' | 'history';
 
 export default function App() {
   const { connected, vibration, temperature } = useSensorSocket();
-
+ 
   // Live series (socket)
   const [vibSeries, setVibSeries] = useState<any[]>([]);
   const [tempSeries, setTempSeries] = useState<any[]>([]);
@@ -19,15 +19,15 @@ export default function App() {
   // History series (REST API)
   const [historyVib, setHistoryVib] = useState<any[]>([]);
   const [historyTemp, setHistoryTemp] = useState<any[]>([]);
-  const [viewMode, setViewMode] = useState<ViewMode>("live");
+  const [viewMode, setViewMode] = useState<ViewMode>('live');
 
   // Filters for history
-  const [from, setFrom] = useState<string>("");
-  const [to, setTo] = useState<string>("");
+  const [from, setFrom] = useState<string>('');
+  const [to, setTo] = useState<string>('');
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
 
-  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   // push incoming vibration samples into chart series
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function App() {
     if (!temperature) return;
     const t = new Date();
     const value =
-      typeof temperature === "number"
+      typeof temperature === 'number'
         ? temperature
         : Number(temperature.temperature ?? temperature.value ?? 0);
 
@@ -80,12 +80,12 @@ export default function App() {
   // Derived live stats
   const currentAccelRMS = useMemo(
     () => vibSeries.at(-1)?.accelRms ?? 0,
-    [vibSeries]
+    [vibSeries],
   );
 
   const currentTemp = useMemo(
     () => tempSeries.at(-1)?.temperature ?? 0,
-    [tempSeries]
+    [tempSeries],
   );
 
   // Derived history stats
@@ -94,7 +94,7 @@ export default function App() {
       historyTemp.length
         ? Math.max(...historyTemp.map((p: any) => p.temperature ?? 0))
         : 0,
-    [historyTemp]
+    [historyTemp],
   );
 
   const maxRMS = useMemo(
@@ -102,11 +102,11 @@ export default function App() {
       historyVib.length
         ? Math.max(...historyVib.map((p: any) => p.rms ?? 0))
         : 0,
-    [historyVib]
+    [historyVib],
   );
 
-  const tempDataToShow = viewMode === "live" ? tempSeries : historyTemp;
-  const vibDataToShow = viewMode === "live" ? vibSeries : historyVib;
+  const tempDataToShow = viewMode === 'live' ? tempSeries : historyTemp;
+  const vibDataToShow = viewMode === 'live' ? vibSeries : historyVib;
 
   async function loadHistory() {
     try {
@@ -114,9 +114,9 @@ export default function App() {
       setHistoryError(null);
 
       const params = new URLSearchParams();
-      if (from) params.set("from", new Date(from).toISOString());
-      if (to) params.set("to", new Date(to).toISOString());
-      params.set("limit", "500");
+      if (from) params.set('from', new Date(from).toISOString());
+      if (to) params.set('to', new Date(to).toISOString());
+      params.set('limit', '500');
 
       const [vibRes, tempRes] = await Promise.all([
         fetch(`${apiBase}/api/vibration/history?${params.toString()}`),
@@ -124,7 +124,7 @@ export default function App() {
       ]);
 
       if (!vibRes.ok || !tempRes.ok) {
-        throw new Error("Failed to load history");
+        throw new Error('Failed to load history');
       }
 
       const vibJson = await vibRes.json();
@@ -150,17 +150,17 @@ export default function App() {
 
       setHistoryVib(vibPoints);
       setHistoryTemp(tempPoints);
-      setViewMode("history");
+      setViewMode('history');
     } catch (err: any) {
-      setHistoryError(err.message || "Unable to load history");
+      setHistoryError(err.message || 'Unable to load history');
     } finally {
       setLoadingHistory(false);
     }
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 bg-gray-50">
-      <header className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
+      {/* <header className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold">
             IoT Sensor Dashboard
@@ -174,61 +174,61 @@ export default function App() {
           <span
             className={`text-sm px-3 py-1 rounded-full ${
               connected
-                ? "bg-emerald-100 text-emerald-700"
-                : "bg-rose-100 text-rose-700"
+                ? 'bg-emerald-100 text-emerald-700'
+                : 'bg-rose-100 text-rose-700'
             }`}
           >
-            {connected ? "Live: Connected" : "Live: Disconnected"}
+            {connected ? 'Live: Connected' : 'Live: Disconnected'}
           </span>
           <div className="inline-flex rounded-full bg-gray-100 p-1 text-xs">
             <button
               type="button"
-              onClick={() => setViewMode("live")}
+              onClick={() => setViewMode('live')}
               className={`px-3 py-1 rounded-full ${
-                viewMode === "live"
-                  ? "bg-white shadow-sm text-gray-900"
-                  : "text-gray-500"
+                viewMode === 'live'
+                  ? 'bg-white shadow-sm text-gray-900'
+                  : 'text-gray-500'
               }`}
             >
               Live
             </button>
             <button
               type="button"
-              onClick={() => setViewMode("history")}
+              onClick={() => setViewMode('history')}
               className={`px-3 py-1 rounded-full ${
-                viewMode === "history"
-                  ? "bg-white shadow-sm text-gray-900"
-                  : "text-gray-500"
+                viewMode === 'history'
+                  ? 'bg-white shadow-sm text-gray-900'
+                  : 'text-gray-500'
               }`}
             >
               History
             </button>
           </div>
         </div>
-      </header>
+      </header> */}
 
       {/* Filters for history mode */}
-      <section className="mb-4 rounded-2xl bg-white p-4 shadow-sm">
+      {/* <section className="mb-4 rounded-2xl glass-card  p-4 shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="text-sm font-semibold mb-1">Time range</div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <div className="flex flex-col">
-                <label className="text-xs text-gray-500 mb-1">From</label>
+                <label className="text-xs text-gray-400 mb-1">From</label>
                 <input
                   type="datetime-local"
                   value={from}
                   onChange={(e) => setFrom(e.target.value)}
-                  className="rounded-md border border-gray-200 px-2 py-1 text-xs md:text-sm"
+                  className="rounded-md border border-gray-200 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white px-2 py-1 text-xs md:text-sm"
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-xs text-gray-500 mb-1">To</label>
+                <label className="text-xs text-gray-400 mb-1">To</label>
                 <input
                   type="datetime-local"
                   value={to}
                   onChange={(e) => setTo(e.target.value)}
-                  className="rounded-md border border-gray-200 px-2 py-1 text-xs md:text-sm"
+                  className="rounded-md border bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white border-gray-200 px-2 py-1 text-xs md:text-sm"
                 />
               </div>
             </div>
@@ -240,7 +240,7 @@ export default function App() {
               className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 disabled:opacity-60"
               disabled={loadingHistory}
             >
-              {loadingHistory ? "Loading…" : "Load history"}
+              {loadingHistory ? 'Loading…' : 'Load history'}
             </button>
             {historyError && (
               <span className="text-xs text-rose-600 max-w-xs">
@@ -249,10 +249,10 @@ export default function App() {
             )}
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        {viewMode === "live" ? (
+      {/* <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {viewMode === 'live' ? (
           <>
             <StatCard
               title="Acceleration RMS"
@@ -269,7 +269,7 @@ export default function App() {
             />
             <StatCard
               title="Last Update"
-              value={lastUpdated ? lastUpdated.toLocaleTimeString() : "—"}
+              value={lastUpdated ? lastUpdated.toLocaleTimeString() : '—'}
               subtitle="Timestamps are local"
               accent="green"
             />
@@ -278,13 +278,13 @@ export default function App() {
           <>
             <StatCard
               title="Max RMS"
-              value={maxRMS ? maxRMS.toFixed(3) : "—"}
+              value={maxRMS ? maxRMS.toFixed(3) : '—'}
               subtitle="Highest RMS in selected range"
               accent="blue"
             />
             <StatCard
               title="Max Temperature"
-              value={maxTemp ? `${maxTemp.toFixed(2)} °C` : "—"}
+              value={maxTemp ? `${maxTemp.toFixed(2)} °C` : '—'}
               subtitle="Highest temperature in selected range"
               accent="red"
             />
@@ -296,20 +296,14 @@ export default function App() {
             />
           </>
         )}
-      </section>
+      </section> */}
 
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 min-h-0">
+      <section className=" gap-4 min-h-0">
         <VibrationChart data={vibDataToShow} />
-        <TemperatureChart data={tempDataToShow} />
+        {/* <TemperatureChart data={tempDataToShow} /> */}
       </section>
 
-      <footer className="mt-8 text-xs text-gray-500 space-y-1">
-        <div>
-          Backend (Socket.IO) at{" "}
-          {import.meta.env.VITE_SOCKET_URL || "http://localhost:5000"}
-        </div>
-        <div>REST API at {apiBase}</div>
-      </footer>
+      
     </div>
   );
 }

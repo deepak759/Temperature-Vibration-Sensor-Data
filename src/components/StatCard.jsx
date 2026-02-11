@@ -8,7 +8,7 @@ export default function StatCard({ title, value, subtitle, accent = 'blue' }) {
   }[accent] || 'from-blue-500 to-cyan-500'
 
   return (
-    <div className="rounded-2xl shadow-sm bg-white p-4">
+    <div className="rounded-2xl glass-card shadow-sm  p-4">
       <div className={`inline-block text-white text-sm px-3 py-1 rounded-full bg-gradient-to-r ${color} mb-3`}>
         {title}
       </div>
