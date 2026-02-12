@@ -4,17 +4,17 @@ export default function CrestGauge({ value = 0 }) {
   let color = '#22c55e';
   let status = 'Normal';
 
-  if (value > 0.7) {
+  if (value > 5000) {
     color = '#ef4444';
     status = 'Critical';
-  } else if (value > 0.5) {
+  } else if (value > 2500) {
     color = '#f59e0b';
     status = 'Warning';
   }
 
   return (
     <div className="glass-card flex flex-col items-center justify-center text-center py-6 my-auto h-[420px]">
-      <div className="text-xl font-semibold mb-4">Crest Factor</div>
+      <div className="text-xl font-semibold mb-4">Velocity RMS</div>
 
       {/* Bigger gauge */}
       <div className="w-[320px] h-full my-auto">
@@ -22,8 +22,8 @@ export default function CrestGauge({ value = 0 }) {
           value={value}
           unit=""
           startValue={0}
-          endValue={1}
-          interval={0.2}
+          endValue={5000}
+          interval={500}
           width={320}
           height={320}
           innerRadius={110}
@@ -72,8 +72,8 @@ function CustomGauge({
   value = 0,
   unit = '',
   startValue = 0,
-  endValue = 1,
-  interval = 0.2,
+  endValue = 5000,
+  interval = 500,
   segmentCount = 70,
   segmentWidth = 3,
   segmentLength = 22,

@@ -89,7 +89,7 @@ export default function VibrationDashboard({ data }) {
 
         {/* Crest Gauge */}
         <div className="lg:col-span-1">
-          <CrestGauge value={latest.crest || 0} />
+          <CrestGauge value={latest.velocityRms || 0} />
         </div>
       </div>
 
