@@ -161,7 +161,7 @@ export default function App() {
     <div className="min-h-screen p-4 md:p-6 lg:p-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
      
       <section className="  min-h-0">
-        <VibrationChart data={vibDataToShow} />
+        <VibrationChart liveData={vibDataToShow} />
    
       </section>
 
