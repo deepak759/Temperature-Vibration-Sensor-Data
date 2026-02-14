@@ -1,0 +1,18 @@
+import React from "react";
+import { motion } from "framer-motion";
+export const ShimmerEffect = () => (
+  <motion.div
+    className="absolute inset-0 -translate-x-full"
+    style={{
+      background:
+        "linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)",
+    }}
+    animate={{ x: ["0%", "200%"] }}
+    transition={{
+      duration: 1.5,
+      repeat: Infinity,
+      ease: "linear",
+      repeatDelay: 0.5,
+    }}
+  />
+);
