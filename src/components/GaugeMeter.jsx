@@ -4,10 +4,10 @@ export default function CrestGauge({ value = 0 }) {
   let color = '#22c55e';
   let status = 'Normal';
 
-  if (value > 5000) {
+  if (value > 4) {
     color = '#ef4444';
     status = 'Critical';
-  } else if (value > 2500) {
+  } else if (value > 2) {
     color = '#f59e0b';
     status = 'Warning';
   }
@@ -22,8 +22,8 @@ export default function CrestGauge({ value = 0 }) {
           value={value}
           unit=""
           startValue={0}
-          endValue={5000}
-          interval={500}
+          endValue={5}
+          interval={1}
           width={320}
           height={320}
           innerRadius={110}
@@ -72,8 +72,8 @@ function CustomGauge({
   value = 0,
   unit = '',
   startValue = 0,
-  endValue = 5000,
-  interval = 500,
+  endValue = 5,
+  interval = 1,
   segmentCount = 70,
   segmentWidth = 3,
   segmentLength = 22,
