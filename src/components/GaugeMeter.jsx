@@ -1,23 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 export default function CrestGauge({ value = 0 }) {
-  let color = '#22c55e';
-  let status = 'Normal';
+  let color = "#22c55e";
+  let status = "Normal";
+  let gaugeColor = "#22c55e";
 
   if (value > 4) {
-    color = '#ef4444';
-    status = 'Critical';
+    color = "#ef4444";
+    gaugeColor = "#ef4444";
+    status = "Critical";
   } else if (value > 2) {
-    color = '#f59e0b';
-    status = 'Warning';
+    color = "#f59e0b";
+    gaugeColor = "#f59e0b";
+    status = "Warning";
+  } else {
+    gaugeColor = "#22c55e";
   }
 
   return (
-    <div className="glass-card flex flex-col items-center justify-center text-center py-6 my-auto h-[420px]">
-      <div className="text-xl font-semibold mb-4">Velocity RMS</div>
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 flex flex-col items-center justify-center text-center py-6 my-auto h-[420px] shadow-md">
+      <div className="text-xl font-semibold mb-4 text-slate-900">
+        Velocity RMS
+      </div>
 
       {/* Bigger gauge */}
-      <div className="w-[320px] h-full my-auto">
+      <div className="flex-1 w-[320px] flex items-center justify-center">
         <CustomGauge
           value={value}
           unit=""
@@ -29,6 +36,7 @@ export default function CrestGauge({ value = 0 }) {
           innerRadius={110}
           segmentLength={22}
           segmentWidth={3}
+          activeColor={gaugeColor}
         />
       </div>
 
@@ -52,12 +60,12 @@ function polarToCartesian(cx, cy, r, angleDeg) {
 function describeArc(cx, cy, r, startAngle, endAngle) {
   const start = polarToCartesian(cx, cy, r, endAngle);
   const end = polarToCartesian(cx, cy, r, startAngle);
-  const largeArcFlag = Math.abs(endAngle - startAngle) <= 180 ? '0' : '1';
+  const largeArcFlag = Math.abs(endAngle - startAngle) <= 180 ? "0" : "1";
   return [
-    'M',
+    "M",
     start.x,
     start.y,
-    'A',
+    "A",
     r,
     r,
     0,
@@ -65,12 +73,12 @@ function describeArc(cx, cy, r, startAngle, endAngle) {
     0,
     end.x,
     end.y,
-  ].join(' ');
+  ].join(" ");
 }
 
 function CustomGauge({
   value = 0,
-  unit = '',
+  unit = "",
   startValue = 0,
   endValue = 5,
   interval = 1,
@@ -78,8 +86,8 @@ function CustomGauge({
   segmentWidth = 3,
   segmentLength = 22,
   innerRadius = 110,
-  activeColor = '#00B05D',
-  inactiveColor = '#BCBCBC',
+  activeColor = "#00B05D",
+  inactiveColor = "#555555",
   width = 320,
   height = 200,
 }) {
@@ -114,9 +122,9 @@ function CustomGauge({
     0,
     Math.round(((animatedValue - startValue) / span) * segmentCount),
   );
-    const decimals = (interval.toString().split(".")[1] || "").length;
-    const labelRadius = innerRadius - 12;
-const arcLabels = [];
+  const decimals = (interval.toString().split(".")[1] || "").length;
+  const labelRadius = innerRadius - 12;
+  const arcLabels = [];
   for (let v = startValue; v <= endValue; v += interval) {
     const frac = (v - startValue) / span;
 
@@ -136,7 +144,7 @@ const arcLabels = [];
       width="100%"
       height={height}
       viewBox={`0 0 ${width} ${height}`}
-      style={{ overflow: 'visible' }}
+      style={{ overflow: "visible" }}
     >
       <g transform={`rotate(-90 ${cx} ${cy})`}>
         {Array.from({ length: segmentCount }).map((_, i) => {
@@ -161,7 +169,7 @@ const arcLabels = [];
               stroke={color}
               strokeWidth={segmentWidth}
               style={{
-                transition: 'stroke 0.1s linear',
+                transition: "stroke 0.1s linear",
               }}
             />
           );
@@ -180,26 +188,26 @@ const arcLabels = [];
           strokeWidth="0.25"
         />
 
-         {arcLabels.map((lab, idx) => (
-            <text
-              key={idx}
-              x={lab.x}
-              y={lab.y}
-              textAnchor="middle"
-              alignmentBaseline="middle"
-              fontSize="7"
-              fill="#555"
-              transform={`rotate(90 ${lab.x} ${lab.y})`}
-              pointerEvents={"none"}
-            >
-              {lab.value}
-            </text>
-          ))}
+        {arcLabels.map((lab, idx) => (
+          <text
+            key={idx}
+            x={lab.x}
+            y={lab.y}
+            textAnchor="middle"
+            alignmentBaseline="middle"
+            fontSize="7"
+            fill="#555"
+            transform={`rotate(90 ${lab.x} ${lab.y})`}
+            pointerEvents={"none"}
+          >
+            {lab.value}
+          </text>
+        ))}
         {/* needle */}
         <g transform={`rotate(${rotation} ${cx} ${cy})`}>
           <polygon
             points={`${cx - 8},${cy} ${cx},${cy - needleLen} ${cx + 8},${cy}`}
-            fill="#e7e7e7"
+            fill="#000000"
           />
         </g>
 
@@ -208,25 +216,24 @@ const arcLabels = [];
           cx={cx}
           cy={cy}
           r="8"
-          fill="#fff"
-          stroke="#333"
+          fill="#000000"
+          stroke="#000000"
           strokeWidth="3"
         />
 
         {/* value */}
         <text
           x={cx}
-          y={cy + 28}
+          y={cy + 58}
           textAnchor="middle"
           transform={`rotate(90 ${cx} ${cy})`}
-          
         >
-          <tspan fontSize="24"  fontWeight="bold" fill="#d2d2d2">
+          <tspan fontSize="24" fontWeight="bold" fill="#000000">
             {value}
           </tspan>
           {unit && (
-            <tspan fontSize="18" fill="#333">
-              {' '}
+            <tspan fontSize="18" fill="#000000">
+              {" "}
               {unit}
             </tspan>
           )}
