@@ -4,6 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 @layer base {
   :root {
     /* Core Colors - Indigo/Blue Primary */
@@ -294,4 +296,21 @@
   background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.1), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
+}
+
+
+/* For the datetime picker popup */
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Style the popup calendar (limited support) */
+input[type="datetime-local"] {
+  color-scheme: dark;
 }

@@ -5,16 +5,12 @@ export default function CrestGauge({ value = 0 }) {
   let status = "Normal";
   let gaugeColor = "#22c55e";
 
-  if (value > 4) {
-    color = "#ef4444";
-    gaugeColor = "#ef4444";
-    status = "Critical";
-  } else if (value > 2) {
-    color = "#f59e0b";
-    gaugeColor = "#f59e0b";
-    status = "Warning";
-  } else {
-    gaugeColor = "#22c55e";
+  if (value > 300) {
+    color = '#ef4444';
+    status = 'Critical';
+  } else if (value > 100) {
+    color = '#f59e0b';
+    status = 'Warning';
   }
 
   return (
@@ -29,8 +25,8 @@ export default function CrestGauge({ value = 0 }) {
           value={value}
           unit=""
           startValue={0}
-          endValue={5}
-          interval={1}
+          endValue={500}
+          interval={100}
           width={320}
           height={320}
           innerRadius={110}
@@ -80,8 +76,8 @@ function CustomGauge({
   value = 0,
   unit = "",
   startValue = 0,
-  endValue = 5,
-  interval = 1,
+  endValue = 500,
+  interval = 100,
   segmentCount = 70,
   segmentWidth = 3,
   segmentLength = 22,
@@ -188,21 +184,21 @@ function CustomGauge({
           strokeWidth="0.25"
         />
 
-        {arcLabels.map((lab, idx) => (
-          <text
-            key={idx}
-            x={lab.x}
-            y={lab.y}
-            textAnchor="middle"
-            alignmentBaseline="middle"
-            fontSize="7"
-            fill="#555"
-            transform={`rotate(90 ${lab.x} ${lab.y})`}
-            pointerEvents={"none"}
-          >
-            {lab.value}
-          </text>
-        ))}
+         {arcLabels.map((lab, idx) => (
+            <text
+              key={idx}
+              x={lab.x}
+              y={lab.y}
+              textAnchor="middle"
+              alignmentBaseline="middle"
+              fontSize="7"
+              fill="#efefef"
+              transform={`rotate(90 ${lab.x} ${lab.y})`}
+              pointerEvents={"none"}
+            >
+              {lab.value}
+            </text>
+          ))}
         {/* needle */}
         <g transform={`rotate(${rotation} ${cx} ${cy})`}>
           <polygon
@@ -228,8 +224,8 @@ function CustomGauge({
           textAnchor="middle"
           transform={`rotate(90 ${cx} ${cy})`}
         >
-          <tspan fontSize="24" fontWeight="bold" fill="#000000">
-            {value}
+          <tspan fontSize="24"  fontWeight="bold" fill="#d2d2d2">
+            {value.toFixed(2)}
           </tspan>
           {unit && (
             <tspan fontSize="18" fill="#000000">

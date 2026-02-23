@@ -1,161 +1,137 @@
-import React from "react";
-import {
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  RadialBarChart,
-  RadialBar,
-} from "recharts";
-import { motion } from "framer-motion";
-import CrestGauge from "./GaugeMeter";
-export default function VibrationDashboard({ data }) {
-  const latest = data[data.length - 1] || {};
+import React, { useState } from "react";
+import * as XLSX from "xlsx";
+import DashboardHeader from "./Header";
+import LivePage from "../pages/LivePage";
+import HistoryPage from "../pages/HistoryPage";
+
+const VibrationDashboardWithHistory = ({ liveData }) => {
+  const [mode, setMode] = useState("live");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [limit, setLimit] = useState(100);
+  const [historyData, setHistoryData] = useState([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [historyError, setHistoryError] = useState("");
+
+  // Dynamic descriptions based on current state
+  const getDescription = () => {
+    if (mode === "live") {
+      return liveData?.length > 0 
+        ? `Live monitoring - ${new Date().toLocaleTimeString()}`
+        : "Connecting to live data stream...";
+    } else {
+      return historyData?.length > 0
+        ? `Historical data analysis`
+        : "Select date range to view historical data";
+    }
+  };
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  };
+
+  const transformHistoryData = (apiResponse) => {
+    return apiResponse.map((item) => ({
+      time: formatTime(item.timestamp),
+      rawTimestamp: item.timestamp,
+      accelRms: item.accel?.rms,
+      accelMax: item.accel?.max,
+      accelPP: item.accel?.peakToPeak,
+      crest: item.crestFactor,
+      velocityRms: item.velocity?.rms,
+    }));
+  };
+
+  const handleFetchHistory = async () => {
+    if (!fromDate || !toDate) {
+      setHistoryError("Please select both from and to dates");
+      return;
+    }
+    setIsLoadingHistory(true);
+    setHistoryError("");
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SOCKET_URL}/api/vibration/history?from=${new Date(
+          fromDate
+        ).toISOString()}&to=${new Date(toDate).toISOString()}&limit=${limit}`
+      );
+      if (!response.ok) throw new Error("Failed to fetch history");
+      const data = await response.json();
+      const transformed = transformHistoryData(data.data);
+      setHistoryData(transformed);
+    } catch (err) {
+      setHistoryError(err.message);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const handleExportExcel = () => {
+    if (!historyData.length) {
+      alert("No data to export");
+      return;
+    }
+
+    const headers = [
+      "Timestamp",
+      "Accel RMS (mg)",
+      "Accel Max (mg)",
+      "Accel Peak-to-Peak (mg)",
+      "Crest Factor",
+      "Velocity RMS (mm/s)",
+    ];
+    
+    const rows = historyData.map((d) => [
+      d.rawTimestamp ? new Date(d.rawTimestamp).toLocaleString() : d.time,
+      d.accelRms,
+      d.accelMax,
+      d.accelPP,
+      d.crest,
+      d.velocityRms,
+    ]);
+
+    const wsData = [headers, ...rows];
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, "Vibration History");
+    XLSX.writeFile(
+      wb,
+      `vibration_history_${new Date().toISOString().slice(0, 10)}.xlsx`
+    );
+  };
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 p-6">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-          Machine Vibration Dashboard
-        </h1>
-        <p className="text-slate-500 text-sm">Real-time condition monitoring</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white p-6">
+      <DashboardHeader
+        mode={mode}
+        onModeChange={setMode}
+        description={getDescription()}
+      />
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <Kpi title="Accel RMS" value={latest.accelRms} unit="mg" />
-        <Kpi title="Accel Max" value={latest.accelMax} unit="mg" />
-        <Kpi title="Peak-to-Peak" value={latest.accelPP} unit="mg" />
-        <Kpi title="Velocity RMS" value={latest.velocityRms} unit="mm/s" />
-        <Kpi title="Crest Factor" value={latest.crest} />
-      </div>
-
-      {/* Main Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Combined Chart */}
-        <div className="lg:col-span-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-md">
-          <ChartTitle title="Acceleration & Velocity Trends" />
-          <ResponsiveContainer width="100%" height={320}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-
-              <XAxis dataKey="time" stroke="#64748b" />
-              <YAxis yAxisId="accel" stroke="#3b82f6" />
-              <YAxis yAxisId="vel" orientation="right" stroke="#10b981" />
-
-              <Tooltip
-                contentStyle={{
-                  background: "#ffffff",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "8px",
-                }}
-              />
-
-              <Line
-                yAxisId="accel"
-                type="monotone"
-                dataKey="accelRms"
-                stroke="#3b82f6"
-                strokeWidth={2}
-                dot={false}
-              />
-
-              <Line
-                yAxisId="accel"
-                type="monotone"
-                dataKey="accelMax"
-                stroke="#f59e0b"
-                strokeWidth={1.5}
-                dot={false}
-              />
-
-              <Line
-                yAxisId="vel"
-                type="monotone"
-                dataKey="velocityRms"
-                stroke="#10b981"
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Crest Gauge */}
-        <div className="lg:col-span-1">
-          <CrestGauge value={latest.velocityRms || 0} />
-        </div>
-      </div>
-
-      {/* Secondary Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        {/* Acceleration Area */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md">
-          <ChartTitle title="Acceleration RMS Trend" />
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={data}>
-              <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" />
-              <XAxis dataKey="time" stroke="#64748b" />
-              <YAxis stroke="#64748b" />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="accelRms"
-                stroke="#3b82f6"
-                fill="#3b82f699"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Velocity Area */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md">
-          <ChartTitle title="Velocity RMS Trend" />
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={data}>
-              <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" />
-              <XAxis dataKey="time" stroke="#64748b" />
-              <YAxis stroke="#64748b" />
-              <Tooltip />
-              <Area
-                type="monotone"
-                dataKey="velocityRms"
-                stroke="#10b981"
-                fill="#10b98199"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      {mode === "live" ? (
+        <LivePage liveData={liveData} isLoading={!liveData?.length} />
+      ) : (
+        <HistoryPage
+          historyData={historyData}
+          isLoading={isLoadingHistory}
+          error={historyError}
+          fromDate={fromDate}
+          toDate={toDate}
+          limit={limit}
+          onFromDateChange={setFromDate}
+          onToDateChange={setToDate}
+          onLimitChange={setLimit}
+          onFetchHistory={handleFetchHistory}
+          onExport={handleExportExcel}
+        />
+      )}
     </div>
   );
-}
+};
 
-/* KPI Card */
-function Kpi({ title, value, unit }) {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.03 }}
-      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md text-center"
-    >
-      <div className="text-slate-600 text-sm font-medium">{title}</div>
-      <div className="text-2xl font-bold text-slate-900">
-        {value}
-        {unit && <span className="text-sm ml-1">{unit}</span>}
-      </div>
-    </motion.div>
-  );
-}
-
-/* Chart Title */
-function ChartTitle({ title }) {
-  return (
-    <div className="text-lg font-semibold mb-3 text-slate-800">{title}</div>
-  );
-}
+export default VibrationDashboardWithHistory;
