@@ -5,7 +5,7 @@ export const ShimmerEffect = () => (
     className="absolute inset-0 -translate-x-full"
     style={{
       background:
-        "linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)",
+        "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
     }}
     animate={{ x: ["0%", "200%"] }}
     transition={{

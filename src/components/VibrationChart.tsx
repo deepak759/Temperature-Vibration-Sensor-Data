@@ -16,7 +16,7 @@ const VibrationDashboardWithHistory = ({ liveData }) => {
   // Dynamic descriptions based on current state
   const getDescription = () => {
     if (mode === "live") {
-      return liveData?.length > 0 
+      return liveData?.length > 0
         ? `Live monitoring - ${new Date().toLocaleTimeString()}`
         : "Connecting to live data stream...";
     } else {
@@ -57,8 +57,8 @@ const VibrationDashboardWithHistory = ({ liveData }) => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_SOCKET_URL}/api/vibration/history?from=${new Date(
-          fromDate
-        ).toISOString()}&to=${new Date(toDate).toISOString()}&limit=${limit}`
+          fromDate,
+        ).toISOString()}&to=${new Date(toDate).toISOString()}&limit=${limit}`,
       );
       if (!response.ok) throw new Error("Failed to fetch history");
       const data = await response.json();
@@ -85,7 +85,7 @@ const VibrationDashboardWithHistory = ({ liveData }) => {
       "Crest Factor",
       "Velocity RMS (mm/s)",
     ];
-    
+
     const rows = historyData.map((d) => [
       d.rawTimestamp ? new Date(d.rawTimestamp).toLocaleString() : d.time,
       d.accelRms,
@@ -101,12 +101,12 @@ const VibrationDashboardWithHistory = ({ liveData }) => {
     XLSX.utils.book_append_sheet(wb, ws, "Vibration History");
     XLSX.writeFile(
       wb,
-      `vibration_history_${new Date().toISOString().slice(0, 10)}.xlsx`
+      `vibration_history_${new Date().toISOString().slice(0, 10)}.xlsx`,
     );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900 p-6">
       <DashboardHeader
         mode={mode}
         onModeChange={setMode}

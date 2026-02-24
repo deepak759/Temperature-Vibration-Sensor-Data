@@ -6,11 +6,11 @@ export default function CrestGauge({ value = 0 }) {
   let gaugeColor = "#22c55e";
 
   if (value > 300) {
-    color = '#ef4444';
-    status = 'Critical';
+    color = "#ef4444";
+    status = "Critical";
   } else if (value > 100) {
-    color = '#f59e0b';
-    status = 'Warning';
+    color = "#f59e0b";
+    status = "Warning";
   }
 
   return (
@@ -184,21 +184,21 @@ function CustomGauge({
           strokeWidth="0.25"
         />
 
-         {arcLabels.map((lab, idx) => (
-            <text
-              key={idx}
-              x={lab.x}
-              y={lab.y}
-              textAnchor="middle"
-              alignmentBaseline="middle"
-              fontSize="7"
-              fill="#efefef"
-              transform={`rotate(90 ${lab.x} ${lab.y})`}
-              pointerEvents={"none"}
-            >
-              {lab.value}
-            </text>
-          ))}
+        {arcLabels.map((lab, idx) => (
+          <text
+            key={idx}
+            x={lab.x}
+            y={lab.y}
+            textAnchor="middle"
+            alignmentBaseline="middle"
+            fontSize="7"
+            fill="#efefef"
+            transform={`rotate(90 ${lab.x} ${lab.y})`}
+            pointerEvents={"none"}
+          >
+            {lab.value}
+          </text>
+        ))}
         {/* needle */}
         <g transform={`rotate(${rotation} ${cx} ${cy})`}>
           <polygon
@@ -224,7 +224,7 @@ function CustomGauge({
           textAnchor="middle"
           transform={`rotate(90 ${cx} ${cy})`}
         >
-          <tspan fontSize="24"  fontWeight="bold" fill="#d2d2d2">
+          <tspan fontSize="24" fontWeight="bold" fill="#d2d2d2">
             {value.toFixed(2)}
           </tspan>
           {unit && (

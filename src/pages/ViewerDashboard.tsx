@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useSensorSocket } from '../hooks/useSensorSocket';
-import DashboardHeader from '../components/Header';
-import LivePage from './LivePage';
-import HistoryPage from './HistoryPage';
-import { useAuth } from '../contexts/AuthContext';
+import { useEffect, useMemo, useState } from "react";
+import { useSensorSocket } from "../hooks/useSensorSocket";
+import DashboardHeader from "../components/Header";
+import LivePage from "./LivePage";
+import HistoryPage from "./HistoryPage";
+import { useAuth } from "../contexts/AuthContext";
 
 const MAX_POINTS = 10; // ~last 2 minutes if 1/sec
 
-type ViewMode = 'live' | 'history';
+type ViewMode = "live" | "history";
 
 export default function ViewerDashboard() {
   const { user } = useAuth();
@@ -21,15 +21,15 @@ export default function ViewerDashboard() {
   // History series (REST API)
   const [historyVib, setHistoryVib] = useState<any[]>([]);
   const [historyTemp, setHistoryTemp] = useState<any[]>([]);
-  const [viewMode, setViewMode] = useState<ViewMode>('live');
+  const [viewMode, setViewMode] = useState<ViewMode>("live");
 
   // Filters for history
-  const [from, setFrom] = useState<string>('');
-  const [to, setTo] = useState<string>('');
+  const [from, setFrom] = useState<string>("");
+  const [to, setTo] = useState<string>("");
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [historyError, setHistoryError] = useState<string | null>(null);
 
-  const apiBase = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+  const apiBase = import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
 
   // push incoming vibration samples into chart series
   useEffect(() => {
@@ -60,7 +60,7 @@ export default function ViewerDashboard() {
     if (!temperature) return;
     const t = new Date();
     const value =
-      typeof temperature === 'number'
+      typeof temperature === "number"
         ? temperature
         : Number(temperature.temperature ?? temperature.value ?? 0);
 
@@ -105,8 +105,8 @@ export default function ViewerDashboard() {
     [historyVib],
   );
 
-  const tempDataToShow = viewMode === 'live' ? tempSeries : historyTemp;
-  const vibDataToShow = viewMode === 'live' ? vibSeries : historyVib;
+  const tempDataToShow = viewMode === "live" ? tempSeries : historyTemp;
+  const vibDataToShow = viewMode === "live" ? vibSeries : historyVib;
 
   async function loadHistory() {
     try {
@@ -114,9 +114,9 @@ export default function ViewerDashboard() {
       setHistoryError(null);
 
       const params = new URLSearchParams();
-      if (from) params.set('from', new Date(from).toISOString());
-      if (to) params.set('to', new Date(to).toISOString());
-      params.set('limit', '500');
+      if (from) params.set("from", new Date(from).toISOString());
+      if (to) params.set("to", new Date(to).toISOString());
+      params.set("limit", "500");
 
       const [vibRes, tempRes] = await Promise.all([
         fetch(`${apiBase}/api/vibration/history?${params.toString()}`),
@@ -124,7 +124,7 @@ export default function ViewerDashboard() {
       ]);
 
       if (!vibRes.ok || !tempRes.ok) {
-        throw new Error('Failed to load history');
+        throw new Error("Failed to load history");
       }
 
       const vibJson = await vibRes.json();
@@ -148,37 +148,37 @@ export default function ViewerDashboard() {
 
       setHistoryVib(vibPoints);
       setHistoryTemp(tempPoints);
-      setViewMode('history');
+      setViewMode("history");
     } catch (err: any) {
-      setHistoryError(err.message || 'Unable to load history');
+      setHistoryError(err.message || "Unable to load history");
     } finally {
       setLoadingHistory(false);
     }
   }
 
   const getDescription = () => {
-    if (viewMode === 'live') {
+    if (viewMode === "live") {
       return vibSeries.length > 0
-        ? `Live monitoring - ${lastUpdated?.toLocaleTimeString() || 'Connecting...'}`
+        ? `Live monitoring - ${lastUpdated?.toLocaleTimeString() || "Connecting..."}`
         : connected
-        ? 'Waiting for data...'
-        : 'Connecting to live data stream...';
+          ? "Waiting for data..."
+          : "Connecting to live data stream...";
     } else {
       return historyVib.length > 0
         ? `Historical data analysis - ${historyVib.length} data points`
-        : 'Select date range to view historical data';
+        : "Select date range to view historical data";
     }
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900">
       <DashboardHeader
         mode={viewMode}
         onModeChange={setViewMode}
         description={getDescription()}
       />
 
-      {viewMode === 'live' ? (
+      {viewMode === "live" ? (
         <LivePage liveData={vibDataToShow} isLoading={!vibSeries.length} />
       ) : (
         <HistoryPage
@@ -194,7 +194,7 @@ export default function ViewerDashboard() {
           onFetchHistory={loadHistory}
           onExport={() => {
             // Export functionality can be added here
-            console.log('Export clicked');
+            console.log("Export clicked");
           }}
         />
       )}

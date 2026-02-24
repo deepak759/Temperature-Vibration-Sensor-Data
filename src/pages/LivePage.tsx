@@ -1,10 +1,20 @@
 import React from "react";
-import { ResponsiveContainer, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 import ChartTitle from "../components/ChartTitle";
 import CrestGauge from "../components/GaugeMeter";
 import KPICards from "../components/KPICard";
 import ChartLoader from "../components/ChartLoader";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
 import { ShimmerEffect } from "../components/ShimmerEffect";
 
 const LivePage = ({ liveData, isLoading }) => {
@@ -15,20 +25,20 @@ const LivePage = ({ liveData, isLoading }) => {
   return (
     <>
       <KPICards data={liveData} mode="live" />
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 glass-card">
           <ChartTitle title="Acceleration & Velocity Trends" />
           <ResponsiveContainer width="100%" height={320}>
             <LineChart data={liveData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis dataKey="time" stroke="#94a3b8" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="time" stroke="#6b7280" />
               <YAxis yAxisId="accel" stroke="#60a5fa" />
               <YAxis yAxisId="vel" orientation="right" stroke="#34d399" />
               <Tooltip
                 contentStyle={{
-                  background: "#020617",
-                  border: "1px solid #334155",
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
                 }}
               />
               <Line
@@ -69,9 +79,9 @@ const LivePage = ({ liveData, isLoading }) => {
           <ChartTitle title="Acceleration RMS Trend" />
           <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={liveData}>
-              <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
-              <XAxis dataKey="time" stroke="#94a3b8" />
-              <YAxis stroke="#94a3b8" />
+              <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
+              <XAxis dataKey="time" stroke="#6b7280" />
+              <YAxis stroke="#6b7280" />
               <Tooltip />
               <Area
                 type="monotone"
@@ -86,9 +96,9 @@ const LivePage = ({ liveData, isLoading }) => {
           <ChartTitle title="Velocity RMS Trend" />
           <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={liveData}>
-              <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
-              <XAxis dataKey="time" stroke="#94a3b8" />
-              <YAxis stroke="#94a3b8" />
+              <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
+              <XAxis dataKey="time" stroke="#6b7280" />
+              <YAxis stroke="#6b7280" />
               <Tooltip />
               <Area
                 type="monotone"
@@ -146,8 +156,8 @@ const KpiLoader = () => (
     }}
   >
     <div className="relative">
-      <div className="h-4 bg-slate-700/50 rounded w-16 mx-auto mb-2"></div>
-      <div className="h-8 bg-slate-700/50 rounded w-20 mx-auto"></div>
+      <div className="h-4 bg-slate-200 rounded w-16 mx-auto mb-2"></div>
+      <div className="h-8 bg-slate-200 rounded w-20 mx-auto"></div>
       <ShimmerEffect />
     </div>
   </motion.div>
@@ -162,7 +172,14 @@ const GaugeLoader = () => (
   >
     <div className="relative">
       <svg width="240" height="240" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="54" fill="none" stroke="#1e293b" strokeWidth="8" />
+        <circle
+          cx="60"
+          cy="60"
+          r="54"
+          fill="none"
+          stroke="#e2e8f0"
+          strokeWidth="8"
+        />
         <motion.circle
           cx="60"
           cy="60"
@@ -183,23 +200,28 @@ const GaugeLoader = () => (
           }}
         />
         <circle cx="60" cy="60" r="6" fill="#3b82f6">
-          <animate attributeName="r" values="6;8;6" dur="1.5s" repeatCount="indefinite" />
+          <animate
+            attributeName="r"
+            values="6;8;6"
+            dur="1.5s"
+            repeatCount="indefinite"
+          />
         </circle>
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
           <motion.div
-            className="text-3xl font-bold text-slate-300"
+            className="text-3xl font-bold text-slate-700"
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
             --
           </motion.div>
-          <div className="text-sm text-slate-500">mm/s</div>
+          <div className="text-sm text-slate-600">mm/s</div>
         </div>
       </div>
     </div>
-    <div className="mt-4 text-sm text-slate-400 flex items-center gap-2">
+    <div className="mt-4 text-sm text-slate-600 flex items-center gap-2">
       <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
       Initializing gauge
     </div>
