@@ -9,7 +9,7 @@ export function useSensorSocket() {
   const [temperature, setTemperature] = useState(null)
 
   useEffect(() => {
-    const url = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000'
+    const url = import.meta.env.VITE_SOCKET_URL
     const socket = io(url, { transports: ['websocket'] })
     socketRef.current = socket
 
