@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: my-react-app
-        image: my-react-app:latest
-        imagePullPolicy: Never        # use local image, not Docker Hub
+        image: deepaksharma611/my-react-app:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
 ---
