@@ -34,19 +34,12 @@ pipeline {
       }
     }
 
-    stage('Deploy to Kubernetes') {
-      steps {
-        sh "kubectl apply -f k8s-deployment.yaml"
-        sh "kubectl set image deployment/my-react-app my-react-app=${IMAGE_NAME}:${IMAGE_TAG}"
-        sh "kubectl rollout status deployment/my-react-app"
-      }
-    }
-
   }
 
   post {
     success {
-      echo "Successfully deployed ${IMAGE_NAME}:${IMAGE_TAG}"
+      echo "Successfully built and pushed ${IMAGE_NAME}:${IMAGE_TAG}"
+      echo "Deploy manually with: kubectl set image deployment/my-react-app my-react-app=${IMAGE_NAME}:${IMAGE_TAG}"
     }
     failure {
       echo "Pipeline failed — check stage logs above"
