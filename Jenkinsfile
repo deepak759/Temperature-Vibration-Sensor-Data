@@ -8,6 +8,7 @@ pipeline {
         KUBECONFIG = '/var/jenkins_home/kubeconfig.yaml'
     }
 
+
     stages {
         stage('Checkout') {
             steps {
