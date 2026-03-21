@@ -36,12 +36,7 @@ pipeline {
             }
         }
 
-        stage('Load Image into Kind') {
-            steps {
-                // Kind needs the image loaded locally since it can't pull from localhost
-                sh "kind load docker-image ${IMAGE_NAME}:${IMAGE_TAG} --name my-cluster"
-            }
-        }
+        
 
         stage('Deploy to Kubernetes') {
             steps {
