@@ -35,16 +35,14 @@ environment {
                     sh "docker push ${IMAGE_NAME}:latest"
                 }
             }
-            
+
         }
 
         
 
-       stage('Deploy to Kubernetes') {
+      stage('Deploy to Kubernetes') {
     steps {
-        sh "kubectl --kubeconfig=${KUBECONFIG} apply --validate=false -f k8s-deployment.yaml"
-        sh "kubectl --kubeconfig=${KUBECONFIG} set image deployment/my-react-app my-react-app=${IMAGE_NAME}:${IMAGE_TAG}"
-        sh "kubectl --kubeconfig=${KUBECONFIG} rollout status deployment/my-react-app --timeout=120s"
+        sh "helm upgrade --install my-react-release ./my-react-chart"
     }
 }
 

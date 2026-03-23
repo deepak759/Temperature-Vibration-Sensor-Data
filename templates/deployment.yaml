@@ -1,0 +1,5 @@
+containers:
+- name: my-react-app
+  image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+  ports:
+    - containerPort: 3000

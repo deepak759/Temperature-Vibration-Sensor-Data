@@ -12,6 +12,9 @@ import { Toaster } from 'sonner';
 
 function AppRoutes() {
   const { isAuthenticated, user, isLoading } = useAuth();
+  const podId = Math.random().toString(36).substring(7);
+console.log("Pod ID:", podId);
+document.body.innerHTML += `<h3>Served by: ${podId}</h3>`;
 
   if (isLoading) {
     return (

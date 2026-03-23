@@ -1,0 +1,7 @@
+image:
+  repository: deepaksharma611/my-react-app
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 3000
