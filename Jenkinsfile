@@ -38,13 +38,13 @@ pipeline {
 
         
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                sh "kubectl apply -f k8s-deployment.yaml"
-                sh "kubectl set image deployment/my-react-app my-react-app=${IMAGE_NAME}:${IMAGE_TAG}"
-                sh "kubectl rollout status deployment/my-react-app --timeout=120s"
-            }
-        }
+       stage('Deploy to Kubernetes') {
+    steps {
+        sh "kubectl --kubeconfig=${KUBECONFIG} apply --validate=false -f k8s-deployment.yaml"
+        sh "kubectl --kubeconfig=${KUBECONFIG} set image deployment/my-react-app my-react-app=${IMAGE_NAME}:${IMAGE_TAG} --validate=false"
+        sh "kubectl --kubeconfig=${KUBECONFIG} rollout status deployment/my-react-app --timeout=120s"
+    }
+}
     }
 
     post {
