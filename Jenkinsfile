@@ -45,6 +45,7 @@ pipeline {
         sh "kubectl --kubeconfig=${KUBECONFIG} rollout status deployment/my-react-app --timeout=120s"
     }
 }
+
     }
 
     post {
