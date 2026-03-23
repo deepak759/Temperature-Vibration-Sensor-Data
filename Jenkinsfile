@@ -1,13 +1,12 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKERHUB_USER = 'deepaksharma611'
-        IMAGE_NAME = "${DOCKERHUB_USER}/my-react-app"
-        IMAGE_TAG = "${BUILD_NUMBER}"
-        KUBECONFIG = '/var/jenkins_home/kubeconfig.yaml'
-    }
-
+environment {
+    DOCKERHUB_USER = 'deepaksharma611'
+    IMAGE_NAME = "${DOCKERHUB_USER}/my-react-app"
+    IMAGE_TAG = "${BUILD_NUMBER}"
+    KUBECONFIG = '/var/jenkins_home/kubeconfig.yaml'
+}
     stages {
         stage('Checkout') {
             steps {
@@ -22,7 +21,7 @@ pipeline {
             }
         }
 
-        
+
 
         stage('Push to Docker Hub') {
             steps {
